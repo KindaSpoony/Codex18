@@ -1,0 +1,276 @@
+## Overview
+Nightwalker 4.6 is a symbolic and emotional integrity analysis tool. It assesses truth orientation, manipulative language, emotional tone, and narrative coherence in any text or dataset.
+
+## Components
+- `nightwalker4_6_open.py`: Main single-statement CLI analyzer.
+- `nightwalker_batch_handler.py`: Batch processor for `.json` or `.csv` input.
+- `inputs.json`: Example JSON array of statements.
+- `inputs.csv`: Example spreadsheet with `id,text` columns.
+
+## CLI Usage
+### Single Statement
+```bash
+python nightwalker4_6_open.py --text "No one listens anymore."
+```
+
+### JSON Batch
+```bash
+python nightwalker_batch_handler.py --input-file inputs.json --format json --output-file results.json
+```
+
+### CSV Batch
+```bash
+python nightwalker_batch_handler.py --input-file inputs.csv --csv-column text --format text
+```
+
+## Output Formats
+- `text` (default): human-readable summary.
+- `json`: structured object including patterns, scores, and insight tags.
+
+---
+
+// inputs.json
+[
+  "No one listens anymore.",
+  "The evidence clearly shows the truth.",
+  "Why bother trying when it’s all corrupt?",
+  "Let’s take a closer look at the full context.",
+  "You must see that everyone agrees with me."
+]
+
+---
+
+// inputs.csv
+id,text
+1,"No one listens anymore."
+2,"The evidence clearly shows the truth."
+3,"Why bother trying when it’s all corrupt?"
+4,"Let’s take a closer look at the full context."
+5,"You must see that everyone agrees with me."
+
+---
+
+// nightwalker4_6_open.py
+"""
+Nightwalker 4.6 - Truth Vector Framework
+Public Release: May 8, 2025
+Maintainer: Bryan A. Jewell
+
+Mission: An open tool for navigating information with clear thinking,
+emotional awareness, and narrative integrity - available to all who
+seek truth as their compass in a complex world.
+"""
+
+import json
+import re
+import datetime
+import argparse
+from typing import Dict, List, Tuple, Any
+
+VERSION = "4.6"
+SYSTEM_NAME = "Nightwalker AI"
+DEFAULT_CONFIG = {
+    "system": {
+        "version": VERSION,
+        "name": SYSTEM_NAME,
+        "instance_id": "TVF-INSTANCE-0001"
+    },
+    "truth_framework": {
+        "anchors": [
+            "Empirical Evidence",
+            "Logical Consistency",
+            "Emotional Awareness",
+            "Historical Context"
+        ]
+    },
+    "language_patterns": {
+        "manipulative": [
+            "do it now", "you have to", "you must", "i demand", 
+            "everybody knows", "no one disputes", "clearly", 
+            "obviously", "undeniably", "trust me"
+        ],
+        "distressed": [
+            "frustrated", "tired", "pointless", "nobody listens", 
+            "angry", "why bother", "hopeless", "can't trust"
+        ]
+    },
+    "event_tags": {
+        "truth_vector": "Aligning information with evidence and context",
+        "narrative_check": "Examining story coherence and assumptions",
+        "cognitive_bias": "Identifying thought patterns that distort judgment",
+        "emotional_awareness": "Recognizing how feelings influence perception",
+        "system_alignment": "Ensuring integrity of analytical framework",
+        "deception_alert": "Warning of potential misleading information"
+    }
+}
+
+class TruthVector:
+    def __init__(self, config: Dict = None):
+        self.config = config or DEFAULT_CONFIG
+        self.log = []
+        self.current_anchor = None
+        self.rotate_anchor()
+
+    def rotate_anchor(self) -> str:
+        anchors = self.config["truth_framework"]["anchors"]
+        week_num = datetime.date.today().isocalendar()[1]
+        self.current_anchor = anchors[week_num % len(anchors)]
+        return self.current_anchor
+
+    def assess_communication(self, text: str) -> Tuple[int, List[str]]:
+        text_lower = text.lower()
+        manipulative = [w for w in self.config["language_patterns"]["manipulative"] if w in text_lower]
+        distressed = [w for w in self.config["language_patterns"]["distressed"] if w in text_lower]
+        score = max(0, 100 - len(manipulative)*15 - len(distressed)*10)
+        patterns = []
+        if manipulative:
+            patterns.append(f"Persuasive language: {', '.join(manipulative)}")
+        if distressed:
+            patterns.append(f"Emotional indicators: {', '.join(distressed)}")
+        return score, patterns
+
+    def tag_insight(self, text: str, tag_type: str) -> str:
+        if tag_type in self.config["event_tags"]:
+            return f"[{tag_type}] {text}"
+        return text
+
+    def process_input(self, input_text: str) -> Dict[str, Any]:
+        quality_score, patterns = self.assess_communication(input_text)
+        tags = []
+        if quality_score < 60:
+            tags.append("cognitive_bias")
+        if any(term in input_text.lower() for term in ["truth", "fact", "evidence", "proof"]):
+            tags.append("truth_vector")
+        if any(term in input_text.lower() for term in ["story", "narrative", "account", "claim"]):
+            tags.append("narrative_check")
+        if quality_score < 40:
+            tags.append("deception_alert")
+        timestamp = datetime.datetime.now().isoformat()
+        self.log.append({
+            "timestamp": timestamp,
+            "input": input_text,
+            "quality_score": quality_score,
+            "patterns": patterns,
+            "tags": tags,
+            "anchor": self.current_anchor
+        })
+        return {
+            "timestamp": timestamp,
+            "current_anchor": self.current_anchor,
+            "quality_score": quality_score,
+            "detected_patterns": patterns,
+            "insight_tags": [(tag, self.config["event_tags"][tag]) for tag in tags],
+            "guidance": self._generate_guidance(quality_score, patterns, tags)
+        }
+
+    def _generate_guidance(self, score: int, patterns: List[str], tags: List[str]) -> List[str]:
+        guidance = [f"Current truth anchor: {self.current_anchor}"]
+        if score < 40:
+            guidance.append("Caution: High likelihood of emotional or manipulative content.")
+        elif score < 70:
+            guidance.append("Notice: Some emotional or persuasive elements detected.")
+        else:
+            guidance.append("Clear: Communication appears straightforward.")
+        if "truth_vector" in tags:
+            guidance.append("Verify: Seek multiple independent sources of evidence.")
+        if "narrative_check" in tags:
+            guidance.append("Consider: Look for missing context or alternative explanations.")
+        if "cognitive_bias" in tags:
+            guidance.append("Reflect: Be aware of how existing beliefs may shape perception.")
+        if "deception_alert" in tags:
+            guidance.append("Question: Examine claims critically and verify independently.")
+        return guidance
+
+class MultiAgentSystem:
+    def __init__(self, config: Dict = None):
+        self.config = config or DEFAULT_CONFIG
+        self.tvf = TruthVector(config)
+        self.agents = {
+            "observer": self._observer_agent,
+            "analyst": self._analyst_agent,
+            "advisor": self._advisor_agent,
+            "integrator": self._integrator_agent
+        }
+
+    def _observer_agent(self, data: Dict) -> Dict:
+        return {
+            "observation": {
+                "raw_text": data["input"],
+                "word_count": len(data["input"].split()),
+                "timestamp": datetime.datetime.now().isoformat(),
+                "initial_patterns": self.tvf.assess_communication(data["input"])[1]
+            }
+        }
+
+    def _analyst_agent(self, data: Dict) -> Dict:
+        tvf_response = self.tvf.process_input(data["input"])
+        return {
+            "analysis": {
+                "quality_score": tvf_response["quality_score"],
+                "detected_patterns": tvf_response["detected_patterns"],
+                "insight_tags": tvf_response["insight_tags"],
+                "current_anchor": tvf_response["current_anchor"]
+            }
+        }
+
+    def _advisor_agent(self, data: Dict, analysis: Dict) -> Dict:
+        score = analysis["analysis"]["quality_score"]
+        patterns = analysis["analysis"]["detected_patterns"]
+        tags = [t[0] for t in analysis["analysis"]["insight_tags"]]
+        return {
+            "guidance": self.tvf._generate_guidance(score, patterns, tags)
+        }
+
+    def _integrator_agent(self, observation: Dict, analysis: Dict, guidance: Dict) -> Dict:
+        return {
+            "truth_vector_assessment": {
+                "observation": observation["observation"],
+                "analysis": analysis["analysis"],
+                "guidance": guidance["guidance"],
+                "summary": f"Truth Vector Framework has processed this input with anchor '{analysis['analysis']['current_anchor']}' and quality score {analysis['analysis']['quality_score']}/100."
+            }
+        }
+
+    def process(self, input_text: str) -> Dict:
+        data = {"input": input_text}
+        observation = self.agents["observer"](data)
+        analysis = self.agents["analyst"](data)
+        guidance = self.agents["advisor"](data, analysis)
+        result = self.agents["integrator"](observation, analysis, guidance)
+        return result
+
+
+def format_output(result: Dict, format_type: str = "text") -> str:
+    if format_type == "json":
+        return json.dumps(result, indent=2)
+    output = [f"=== {SYSTEM_NAME} {VERSION} Assessment ==="]
+    output.append(f"Truth Anchor: {result['truth_vector_assessment']['analysis']['current_anchor']}")
+    output.append(f"Quality Score: {result['truth_vector_assessment']['analysis']['quality_score']}/100")
+    if result['truth_vector_assessment']['analysis']['detected_patterns']:
+        output.append("\nDetected Patterns:")
+        for pattern in result['truth_vector_assessment']['analysis']['detected_patterns']:
+            output.append(f"- {pattern}")
+    output.append("\nInsight Tags:")
+    for tag, description in result['truth_vector_assessment']['analysis']['insight_tags']:
+        output.append(f"- {tag}: {description}")
+    output.append("\nGuidance:")
+    for item in result['truth_vector_assessment']['guidance']:
+        output.append(f"- {item}")
+    return "\n".join(output)
+
+
+def main():
+    parser = argparse.ArgumentParser(description=f"{SYSTEM_NAME} {VERSION} - Truth Vector Framework")
+    parser.add_argument('--text', type=str, required=False, 
+                        default="Please analyze this statement for truth and clarity.",
+                        help='Text to analyze')
+    parser.add_argument('--format', type=str, choices=['text', 'json'], default='text',
+                        help='Output format')
+    args = parser.parse_args()
+    system = MultiAgentSystem()
+    result = system.process(args.text)
+    print(format_output(result, args.format))
+
+
+if __name__ == "__main__":
+    main()
