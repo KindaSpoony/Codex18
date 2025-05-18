@@ -62,3 +62,23 @@ class TruthVector:
             v3 = max(0.0, min(1.0, v3))
         v0 = q
         return [v0, v1, v2, v3]
+
+
+class SimpleTruthVector:
+    """Simplified fallback truth vector processor."""
+
+    def __init__(self):
+        pass
+
+    def process_input(self, quality_score: float, tags: Set[str]) -> List[float]:
+        """Return a basic 4-dimensional truth vector.
+
+        This version flags the presence of any issue tags by reducing all
+        integrity dimensions equally.
+        """
+        q = max(0.0, min(1.0, quality_score))
+        if tags:
+            v1 = v2 = v3 = 0.5
+        else:
+            v1 = v2 = v3 = 1.0
+        return [q, v1, v2, v3]
