@@ -79,17 +79,27 @@ class DriftAnalysisEngine:
             json.dump(data, f)
 
     def analyze_input(self, quality_score: float, tags: Set[str]):
-        """Analyze a new input given its quality score and tags.
+        """Analyze a new input and update drift state.
+
+        Parameters
+        ----------
+        quality_score : float
+            Normalized overall content quality between 0.0 and 1.0.
+        tags : Set[str]
+            Set of issue tags describing problems in the content.
 
         Returns
         -------
         tuple
-            (truth_vector, alarm_flag)
+            ``(truth_vector, alarm_flag)`` where ``truth_vector`` is the
+            computed 4-dimensional vector and ``alarm_flag`` indicates if
+            drift thresholds were exceeded.
         """
-        # Compute the 4D truth vector for the input using fallback logic
+        # Compute the 4D truth vector for the input with robust fallback
         try:
             vector = self.truth_vector.process_input(quality_score, tags)
         except Exception:
+            # Any processing error triggers the simpler fallback vector
             vector = self.fallback_vector.process_input(quality_score, tags)
 
         if self.anchor_vector is None:
@@ -121,8 +131,13 @@ class DriftAnalysisEngine:
     def rotate_anchor(self, new_anchor: Optional[List[float]] = None):
         """Manually set a new anchor vector.
 
-        If ``new_anchor`` is ``None``, the last report vector is used as the
-        new baseline. The anchor is persisted to ``drift_anchor.json``.
+        Parameters
+        ----------
+        new_anchor : Optional[List[float]]
+            Custom 4-dimensional vector to use as the new baseline. If
+            ``None``, the last report vector becomes the baseline.
+
+        The selected anchor is persisted to ``drift_anchor.json``.
         """
         if new_anchor is not None:
             if len(new_anchor) != 4:
