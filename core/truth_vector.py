@@ -6,7 +6,12 @@ from typing import List, Set
 
 
 class TruthVector:
-    """Computes a 4-dimensional truth vector for given input analysis data."""
+    """Computes a proportional 4-dimensional truth vector for input analysis.
+
+    Each integrity dimension is reduced in proportion to how many
+    issue tags fall into the corresponding category. The more issues
+    recorded, the lower the resulting score on that axis.
+    """
 
     def __init__(self):
         # Optional anchor for baseline truth vector (not used unless future extension requires it)
@@ -65,20 +70,38 @@ class TruthVector:
 
 
 class SimpleTruthVector:
-    """Simplified fallback truth vector processor."""
+    """Fallback truth vector processor using fixed scoring.
+
+    If any issue tags are present, all integrity dimensions return ``0.5``.
+    Otherwise every dimension is ``1.0``. This conservative approach
+    provides a quick estimate when proportional scoring fails.
+    """
 
     def __init__(self):
         pass
 
     def process_input(self, quality_score: float, tags: Set[str]) -> List[float]:
-        """Return a basic 4-dimensional truth vector.
+        """Convert a quality score and tags into a simplified truth vector.
 
-        This version flags the presence of any issue tags by reducing all
-        integrity dimensions equally.
+        Parameters
+        ----------
+        quality_score : float
+            Float between 0.0 and 1.0 indicating overall content quality.
+        tags : Set[str]
+            Set of strings indicating content issue tags.
+
+        Returns
+        -------
+        List[float]
+            4-dimensional vector ``[v0, v1, v2, v3]`` where all specific
+            integrity components are ``0.5`` when any tag is present and
+            ``1.0`` otherwise.
         """
         q = max(0.0, min(1.0, quality_score))
         if tags:
+            # Any issue tags trigger a uniform mid-level score
             v1 = v2 = v3 = 0.5
         else:
+            # No tags means integrity is fully intact
             v1 = v2 = v3 = 1.0
         return [q, v1, v2, v3]
