@@ -2,27 +2,38 @@
 
 Codex18 is the next evolution of our data analysis platform, incorporating automated data ingestion and processing for Founder's Reports. It builds on lessons learned in Codex17 and introduces a robust ingestion pipeline to streamline report analysis.
 
-## Ingestion Pipeline for Founder's Reports
+## Codex18 Architecture and Ingestion Pipeline
 
-**Status: Live and Operational** – The Codex18 system now includes an automated ingestion module that is actively monitoring and processing Founder's Reports. Any new report placed into the `data/reports_incoming` directory will be automatically ingested by the system:
+### Architectural Lineage and Core Concepts
 
-- **Metadata Extraction**: Each report is expected to contain YAML front matter at the top of the file. The ingestion module parses this front matter to extract structured metadata (e.g. title, author, date, and other report attributes).  
-- **Secure Timestamping**: When a report is ingested, the system attaches a current UTC timestamp to the record to log when it was processed. This timestamp is generated in a time-zone safe manner (UTC) to ensure consistency across systems.  
-- **Content Hashing**: The body of the report (excluding the front matter) is hashed using SHA-256. This produces a unique fingerprint for the content, which can be used for integrity verification or to detect duplicate reports.  
-- **JSON Record Creation**: A structured JSON record is created for each report and saved to `data/analysis_output`. This JSON includes the extracted metadata, the ingestion timestamp, the SHA-256 hash, and the full text content of the report. The structured format facilitates downstream analysis and querying of the reports.  
-- **Archival of Originals**: After successful processing, the original report file is moved to `data/chronicle/archive`. Archiving ensures the original content is preserved for compliance and historical reference, while keeping the incoming directory clean. The system will append a timestamp to the filename upon archiving if a file with the same name already exists in the archive, preventing any filename collisions.  
+Codex18 builds on the architectural foundations of Codex17. It uses a **memory braid** to weave short-term and long-term context together, a dedicated **Protector module** that oversees actions for safety, and a series of **handshake protocols** that coordinate interactions between components. Together these mechanisms provide continuity of knowledge while enforcing policy constraints and establishing an auditable trail for significant operations.
 
-With this pipeline in place, Codex18 can reliably transform incoming Founder's Reports into structured data for analysis, all while maintaining an audit trail of original documents and processing times.
+### Founder's Report Ingestion Pipeline
 
-## Repository Structure
-codex18/
-├── data/
-│   ├── reports_incoming/ # directory for incoming Founder's Report files (raw format)
-│   ├── analysis_output/  # directory where processed JSON records are stored
-│   └── chronicle/
-│       └── archive/      # archive for original reports after ingestion
-├── ingest.py             # ingestion pipeline script for Founder's Reports (automated processing)
-├── ...                   # other project modules and files
-└── README.md             # project documentation (this file)
- 
-*(Remaining sections of the README omitted for brevity; they include setup instructions, usage examples, and contributor guidelines, which remain unchanged.)*
+The ingestion system processes Founder's Reports end‑to‑end:
+
+1. **Detection and Import** – new reports added to the monitored directory are automatically detected.
+2. **Parsing and Content Extraction** – the reports are converted into machine‑readable text with metadata captured.
+3. **Analysis and Summarization** – the core model summarizes important points, guided by the Protector.
+4. **Integration into Memory Braid** – extracted knowledge is merged into long‑term memory so future reasoning can reference it.
+5. **Validation and Handshake** – the Protector validates sources and signs off before information becomes official.
+6. **Storage and Indexing** – both raw and processed reports are archived and indexed for search.
+7. **Triggering Follow‑up Actions** – actionable items from the reports can spawn tasks or notifications after approval.
+
+Through this pipeline Codex18 keeps its knowledge current while maintaining safety and provenance.
+
+### Repository Structure and Data Organization
+
+Key directories include:
+
+* **`/reports/founders/`** – source and processed Founder's Reports.
+* **`/ingestion/`** – scripts for detecting and parsing new documents.
+* **`/core/`** – main agent logic and memory braid implementation.
+* **`/protector/`** – the safety layer and handshake protocol code.
+* **`/knowledge_base/`** or **`/data/`** – persistent long‑term memory storage.
+* **`/docs/`** – design documents and guides.
+* **Configuration Files** – settings for memory retention, Protector rules, and ingestion parameters.
+
+This layout clarifies responsibility for each component, ensuring new reports flow from detection through processing to searchable knowledge in a maintainable way.
+
+*(Remaining sections of the README, such as setup instructions and contributor guidelines, are unchanged.)*
