@@ -79,6 +79,8 @@ Detailed documentation (`docs/drift_analysis.md`) covers:
 * Explanation of the 4-dimensional truth vector.
 * Alarm threshold mechanisms.
 * Persistence strategy (anchor vectors, logs).
+  Drift logs are saved as `drift_log_<YYYY-MM-DDTHH:MM:SSZ>.json` in
+  `data/analysis_output/drift_logs/`.
 * Usage examples and narrative management insights.
 
 ---

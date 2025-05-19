@@ -1,6 +1,11 @@
-"""
-Drift Analysis Engine for Codex18.
-Monitors the truth vector of content to detect narrative drift or integrity issues.
+"""Drift Analysis Engine for Codex18.
+
+This component monitors truth vectors to detect narrative drift. It compares
+incoming vectors against a persisted baseline **anchor** vector and raises an
+alarm if any dimension differs by more than the configured threshold (default
+``0.20`` per axis). Every analysis result is saved to
+``latest_drift_report.json`` and logged in ``data/analysis_output/drift_logs``
+with timestamped filenames.
 
 All timestamps are stored in UTC using the ``YYYY-MM-DDTHH:MM:SSZ`` format.
 """
@@ -70,9 +75,9 @@ class DriftAnalysisEngine:
         diff_last: Optional[List[float]],
         alarm_flag: bool,
     ) -> None:
-        ts = datetime.utcnow().strftime("%Y%m%dT%H%M%S")
+        ts = datetime.utcnow().replace(microsecond=0).strftime("%Y-%m-%dT%H:%M:%SZ")
         path = os.path.join(self.logs_dir, f"drift_log_{ts}.json")
-        timestamp = datetime.utcnow().replace(microsecond=0).strftime("%Y-%m-%dT%H:%M:%SZ")
+        timestamp = ts
         data = {
             "vector": vector,
             "diff_anchor": diff_anchor,
