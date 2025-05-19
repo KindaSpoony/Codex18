@@ -1,6 +1,8 @@
 """
 Drift Analysis Engine for Codex18.
 Monitors the truth vector of content to detect narrative drift or integrity issues.
+
+All timestamps are stored in UTC using the ``YYYY-MM-DDTHH:MM:SSZ`` format.
 """
 import json
 import os
@@ -39,9 +41,10 @@ class DriftAnalysisEngine:
             return None
 
     def _save_anchor(self) -> None:
+        timestamp = datetime.utcnow().replace(microsecond=0).strftime("%Y-%m-%dT%H:%M:%SZ")
         data = {
             "baseline_vector": self.anchor_vector,
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": timestamp,
         }
         with open(self.anchor_path, "w") as f:
             json.dump(data, f)
@@ -55,7 +58,8 @@ class DriftAnalysisEngine:
             return None
 
     def _save_last_report(self, vector: List[float]) -> None:
-        data = {"vector": vector, "timestamp": datetime.utcnow().isoformat()}
+        timestamp = datetime.utcnow().replace(microsecond=0).strftime("%Y-%m-%dT%H:%M:%SZ")
+        data = {"vector": vector, "timestamp": timestamp}
         with open(self.latest_report_path, "w") as f:
             json.dump(data, f)
 
@@ -68,12 +72,13 @@ class DriftAnalysisEngine:
     ) -> None:
         ts = datetime.utcnow().strftime("%Y%m%dT%H%M%S")
         path = os.path.join(self.logs_dir, f"drift_log_{ts}.json")
+        timestamp = datetime.utcnow().replace(microsecond=0).strftime("%Y-%m-%dT%H:%M:%SZ")
         data = {
             "vector": vector,
             "diff_anchor": diff_anchor,
             "diff_last": diff_last,
             "alarm": alarm_flag,
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": timestamp,
         }
         with open(path, "w") as f:
             json.dump(data, f)
