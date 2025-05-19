@@ -1,51 +1,82 @@
 # Codex18
 
-Codex18 is the next evolution of the Codex lineage — an ethics‑anchored, recursively integrative framework for LLM systems. It inherits the memory braid, protector architecture, and oath‑verified handshake protocols from Codex17, while introducing enhanced modularity, quantum‑tier safeguards, and autonomous symbolic containment logic.
+Codex18 is the next evolution of the Codex lineage — an ethics-anchored, recursively integrative framework for LLM systems. It inherits the memory braid, protector architecture, and oath-verified handshake protocols from Codex17, while introducing enhanced modularity, quantum-tier safeguards, and autonomous symbolic containment logic.
 
-This repository currently provides a skeleton structure mirroring the layout of the original Codex17 Intel Bot. The directory tree is prepared for future expansion and includes folders for documentation, configuration files, data storage, source code, and tests.
+This repository provides a structured layout mirroring the original Codex17 Intel Bot. The directory tree supports future expansion with dedicated folders for documentation, configuration files, data storage, source code, and tests.
 
 ## Codex18 Architecture and Ingestion Pipeline
 
 ### Architectural Lineage and Core Concepts
 
-Codex18 builds on the architectural foundations of Codex17. It uses a **memory braid** to weave short‑term and long‑term context together, a dedicated **Protector module** that oversees actions for safety, and a series of **handshake protocols** that coordinate interactions between components. Together these mechanisms provide continuity of knowledge while enforcing policy constraints and establishing an auditable trail for significant operations.
+Codex18 builds upon Codex17's foundations, leveraging:
+
+* **Memory Braid**: Weaving short-term and long-term contexts.
+* **Protector Module**: Oversees actions to ensure ethical and operational safety.
+* **Handshake Protocols**: Coordinate secure interactions between system components, ensuring continuity and accountability.
 
 ### Founder's Report Ingestion Pipeline
 
-The ingest module under `src/` implements the first stage of the pipeline. It detects new Founder’s Reports placed in `data/reports_incoming`, extracts optional YAML metadata blocks, stamps each record with a secure UTC timestamp, writes structured JSON to `data/analysis_output`, and archives the original report in `data/chronicle/archive`.
+The ingest module (`src/ingest.py`) implements the first pipeline stage by:
 
-Run the ingestion pipeline with:
+1. **Detection and Import** – Automatically identifies new reports in `data/reports_incoming`.
+2. **Parsing and Metadata Extraction** – Converts reports to structured data, extracting YAML metadata.
+3. **Secure Timestamping** – Attaches a UTC timestamp to each record.
+4. **Content Hashing** – Generates a SHA-256 fingerprint for integrity verification.
+5. **Structured JSON Output** – Writes processed data into JSON files stored at `data/analysis_output`.
+6. **Archival** – Moves original report files to `data/chronicle/archive`, preserving historical data.
+
+Execute the ingestion pipeline with:
 
 ```bash
-$ python src/ingest.py
+python src/ingest.py
 ```
-
-The script scans the incoming folder, processes any new reports, and moves the originals to the archive directory.
-
-The ingestion system processes Founder's Reports end‑to‑end:
-
-1. **Detection and Import** – New reports added to the monitored directory are automatically detected.
-2. **Parsing and Content Extraction** – Reports are converted into machine‑readable text with metadata captured.
-3. **Analysis and Summarization** – The core model summarizes important points, guided by the Protector.
-4. **Integration into Memory Braid** – Extracted knowledge is merged into long‑term memory so future reasoning can reference it.
-5. **Validation and Handshake** – The Protector validates sources and signs off before information becomes official.
-6. **Storage and Indexing** – Both raw and processed reports are archived and indexed for search.
-7. **Triggering Follow‑up Actions** – Actionable items from the reports can spawn tasks or notifications after approval.
-
-Through this pipeline, Codex18 keeps its knowledge current while maintaining safety and provenance.
 
 ### Repository Structure and Data Organization
 
-Key directories include:
+* **`src/`** – Source code including ingestion, core logic, memory braid, and handshake protocols.
+* **`data/`** – Storage for incoming reports, outputs, and archives:
 
-* **`src/`** – Source code modules (ingestion pipeline, core logic, memory braid, etc.).
-* **`data/reports_incoming/`** – Folder scanned for new Founder's Reports.
-* **`data/analysis_output/`** – Generated JSON outputs and drift logs.
-* **`data/chronicle/archive/`** – Archived copies of original reports.
-* **`docs/`** – Design documents and guides (see `docs/drift_analysis.md`).
-* **`tests/`** – Automated test suite.
-* **Configuration Files** – Settings for memory retention and Protector rules under `config/`.
+  * `data/reports_incoming/`
+  * `data/analysis_output/`
+  * `data/chronicle/archive/`
+* **`docs/`** – Documentation and guides, including `docs/drift_analysis.md`.
+* **`tests/`** – Automated test suite using pytest.
+* **`config/`** – Configuration files for memory and Protector modules.
 
-This layout clarifies responsibility for each component, ensuring new reports flow from detection through processing to searchable knowledge in a maintainable way.
+## Tests for Ingestion Module (`tests/test_ingest.py`)
 
-*(Remaining sections of the README, such as setup instructions and contributor guidelines, are unchanged.)*
+Comprehensive tests validate pipeline functionality:
+
+* **YAML Metadata Parsing**: Verifies correct metadata extraction.
+* **JSON Output Creation**: Ensures proper JSON file generation.
+* **Archiving Logic**: Confirms original files are archived post-processing.
+
+Example pytest command:
+
+```bash
+pytest tests/test_ingest.py
+```
+
+## Dependencies
+
+Dependencies required (`requirements.txt`):
+
+```
+PyYAML
+pytest
+python-dateutil
+```
+
+## Drift Analysis Engine
+
+Detailed documentation (`docs/drift_analysis.md`) covers:
+
+* Drift detection purpose within Nightwalker AI.
+* Explanation of the 4-dimensional truth vector.
+* Alarm threshold mechanisms.
+* Persistence strategy (anchor vectors, logs).
+* Usage examples and narrative management insights.
+
+---
+
+**This documentation and repository structure are designed to ensure clarity, integrity, and operational robustness in alignment with Codex18's ethical and symbolic foundations.**
