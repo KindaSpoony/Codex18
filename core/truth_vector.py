@@ -14,8 +14,7 @@ class TruthVector:
     """
 
     def __init__(self):
-        # Optional anchor for baseline truth vector (not used unless future extension requires it)
-        # self.current_anchor = None
+        # Optional anchor for baseline truth vector (unused placeholder for future extension)
         pass
 
     def process_input(self, quality_score: float, tags: Set[str]) -> List[float]:

@@ -20,7 +20,8 @@ The ingest module (`src/ingest.py`) implements the first pipeline stage by:
 
 1. **Detection and Import** – Automatically identifies new reports in `data/reports_incoming`.
 2. **Parsing and Metadata Extraction** – Converts reports to structured data, extracting YAML metadata.
-3. **Secure Timestamping** – Attaches a UTC timestamp to each record.
+3. **Secure Timestamping** – Attaches a UTC timestamp to each record using the
+   ISO 8601 format `YYYY-MM-DDTHH:MM:SSZ`.
 4. **Content Hashing** – Generates a SHA-256 fingerprint for integrity verification.
 5. **Structured JSON Output** – Writes processed data into JSON files stored at `data/analysis_output`.
 6. **Archival** – Moves original report files to `data/chronicle/archive`, preserving historical data.
@@ -50,6 +51,9 @@ Comprehensive tests validate pipeline functionality:
 * **YAML Metadata Parsing**: Verifies correct metadata extraction.
 * **JSON Output Creation**: Ensures proper JSON file generation.
 * **Archiving Logic**: Confirms original files are archived post-processing.
+
+Test fixtures return both the path to the generated JSON and the parsed
+content, enabling straightforward assertions.
 
 Example pytest command:
 

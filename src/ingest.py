@@ -3,12 +3,15 @@
 Ingestion pipeline for Founder's Reports in Codex18.
 Scans for new reports, extracts metadata, timestamps, hashes content,
 outputs structured JSON, and archives the original reports.
+
+Timestamps are recorded in UTC using the ISO 8601 format
+``YYYY-MM-DDTHH:MM:SSZ``.
 """
 
 import os
 import json
 import hashlib
-from datetime import datetime, timezone
+from datetime import datetime
 
 import yaml  # PyYAML is used for parsing YAML front matter
 import shutil
@@ -68,9 +71,9 @@ for filename in os.listdir(INCOMING_DIR):
         # No front matter present
         content = text.lstrip()
 
-    # Generate a secure UTC timestamp for ingestion
-    timestamp_utc = datetime.now(timezone.utc).replace(tzinfo=timezone.utc)
-    ingest_timestamp = timestamp_utc.isoformat()  # e.g. "2025-05-17T17:45:30.123456+00:00"
+    # Generate a secure UTC timestamp for ingestion in ISO 8601 format
+    timestamp_utc = datetime.utcnow().replace(microsecond=0)
+    ingest_timestamp = timestamp_utc.strftime("%Y-%m-%dT%H:%M:%SZ")
 
     # Compute SHA-256 hash of the report content (as a check for integrity or duplicates)
     content_bytes = content.encode('utf-8')
