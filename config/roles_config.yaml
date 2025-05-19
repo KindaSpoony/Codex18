@@ -1,0 +1,4 @@
+# Placeholder roles configuration
+roles:
+  manager:
+    active: true
