@@ -17,7 +17,12 @@ EXPECTED_HASH = hashlib.sha256(HANDSHAKE_YAML.encode('utf-8')).hexdigest()
 EXPECTED_SEAL_PHRASE = "No Veteran Left Behind"
 
 def _parse_handshake_yaml(yaml_text: str):
-    """Parse handshake YAML to extract activation conditions and handshake stack."""
+    """Parse handshake YAML using regex for symbolic integrity.
+
+    This function extracts activation conditions and the handshake stack
+    strictly via pattern matching so that the ordering and tokens remain
+    untouched. It returns a tuple ``(conditions_dict, handshake_list)``.
+    """
     cond_pattern = r'activation_conditions:\s*\n((?:\s+[A-Za-z_]+\s*:\s*(?:true|false)\s*\n)+)'
     stack_pattern = r'handshake_stack:\s*\n((?:\s*-\s*.*\n)+)'
     cond_match = re.search(cond_pattern, yaml_text)
