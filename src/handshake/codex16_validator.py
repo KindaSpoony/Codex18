@@ -1,7 +1,6 @@
 import os
 import re
 import sys
-import yaml
 import logging
 import hashlib
 
@@ -41,7 +40,10 @@ def _parse_handshake_yaml(yaml_text: str):
 
     handshake_list = []
     for line in stack_match.group(1).strip().splitlines():
-        handshake_list.append(line.lstrip("-").strip())
+        cleaned = line.strip()
+        if cleaned.startswith("-"):
+            cleaned = cleaned[1:].strip()
+        handshake_list.append(cleaned)
 
     return conditions, handshake_list
 
@@ -61,6 +63,11 @@ def verify_handshake(yaml_text: str = HANDSHAKE_YAML, bypass: bool | None = None
             logging.error(f"Handshake validation error: {exc}")
             return False
     else:
+        try:
+            import yaml
+        except Exception as exc:
+            logging.error(f"yaml module required for bypass mode: {exc}")
+            return False
         parsed = yaml.safe_load(yaml_text)
         conditions = parsed.get("activation_conditions", {})
         handshake_stack = parsed.get("handshake_stack", [])
