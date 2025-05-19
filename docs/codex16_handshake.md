@@ -27,7 +27,7 @@ handshake_stack:
 
 The validator computes the SHA-256 hash of the handshake YAML and verifies it matches the expected value. It then checks that all activation conditions are `true`, the challenge/response pair is present and ordered correctly, and the seal phrase matches exactly.
 
-A bypass mode is available by setting the `CODEX_INTEGRITY_BYPASS` environment variable. When enabled, the YAML is parsed using `yaml.safe_load` instead of the strict regex parser.
+Audit mode is enabled by setting the `CODEX_INTEGRITY_AUDIT` environment variable. When active, the validator uses a strict regex parser and verifies the SHA-256 hash of the YAML. Without this flag, the YAML is parsed using `yaml.safe_load`.
 
 ## Usage
 

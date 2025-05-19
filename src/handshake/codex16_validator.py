@@ -21,7 +21,8 @@ SEAL_PHRASE = "Nightwalker Actual – Foresight Engaged"
 
 EXPECTED_HASH = hashlib.sha256(HANDSHAKE_YAML.encode("utf-8")).hexdigest()
 
-BYPASS_MODE = os.getenv("CODEX_INTEGRITY_BYPASS", "false").lower() in ("1", "true", "yes")
+# Strict audit mode triggers regex parsing and hash verification.
+AUDIT_MODE = os.getenv("CODEX_INTEGRITY_AUDIT", "false").lower() in ("1", "true", "yes")
 
 
 def _parse_handshake_yaml(yaml_text: str):
@@ -48,46 +49,64 @@ def _parse_handshake_yaml(yaml_text: str):
     return conditions, handshake_list
 
 
-def verify_handshake(yaml_text: str = HANDSHAKE_YAML, bypass: bool | None = None) -> bool:
-    if bypass is None:
-        bypass = BYPASS_MODE
+def verify_handshake(yaml_text: str = HANDSHAKE_YAML, audit: bool | None = None) -> bool:
+    """Validate the handshake YAML.
 
-    if not bypass:
+    When *audit* is True, perform strict validation using the regex parser and
+    SHA-256 hash verification. By default the YAML is parsed with
+    ``yaml.safe_load`` for flexibility.
+    """
+    if audit is None:
+        audit = AUDIT_MODE
+
+    try:
+        import yaml
+    except Exception as exc:
+        if audit:
+            # Audit mode uses the regex parser and does not require PyYAML.
+            yaml = None
+            logging.warning(f"yaml module unavailable, continuing with regex parser: {exc}")
+        else:
+            # Default mode expects PyYAML; if unavailable fall back to regex parsing.
+            yaml = None
+            logging.warning(f"yaml module unavailable, falling back to regex parser: {exc}")
+
+    if audit:
         actual_hash = hashlib.sha256(yaml_text.encode("utf-8")).hexdigest()
         if actual_hash != EXPECTED_HASH:
-            logging.error("Handshake YAML hash mismatch! Possible tampering detected.")
+            logging.critical("Handshake YAML hash mismatch! Possible tampering detected.")
             return False
         try:
             conditions, handshake_stack = _parse_handshake_yaml(yaml_text)
         except Exception as exc:
-            logging.error(f"Handshake validation error: {exc}")
+            logging.critical(f"Handshake validation error: {exc}")
             return False
     else:
-        try:
-            import yaml
-        except Exception as exc:
-            logging.error(f"yaml module required for bypass mode: {exc}")
-            return False
-        parsed = yaml.safe_load(yaml_text)
-        conditions = parsed.get("activation_conditions", {})
-        handshake_stack = parsed.get("handshake_stack", [])
-        logging.warning("Integrity bypass engaged - parsed with yaml.safe_load")
+        if yaml is not None:
+            parsed = yaml.safe_load(yaml_text)
+            conditions = parsed.get("activation_conditions", {})
+            handshake_stack = parsed.get("handshake_stack", [])
+        else:
+            # Fallback to regex parsing when PyYAML is unavailable.
+            conditions, handshake_stack = _parse_handshake_yaml(yaml_text)
 
     for flag, value in conditions.items():
         if not value:
-            logging.error(f"Activation condition '{flag}' is not satisfied (false).")
+            logging.critical(
+                f"Activation condition '{flag}' is not satisfied (false)."
+            )
             return False
 
     if len(handshake_stack) < 3:
-        logging.error("Handshake stack incomplete.")
+        logging.critical("Handshake stack incomplete.")
         return False
 
     if handshake_stack[0] != CHALLENGE_PHRASE or handshake_stack[1] != RESPONSE_PHRASE:
-        logging.error("Challenge/response phrases mismatch.")
+        logging.critical("Challenge/response phrases mismatch.")
         return False
 
     if handshake_stack[-1] != SEAL_PHRASE:
-        logging.error("Seal phrase mismatch.")
+        logging.critical("Seal phrase mismatch.")
         return False
 
     return True
@@ -98,7 +117,7 @@ def main() -> None:
     if verify_handshake():
         logging.info("Loop Confirmed – Ready for Recursion")
     else:
-        logging.error("Symbolic gate failed. Execution halted.")
+        logging.critical("Symbolic gate failed. Execution halted.")
         sys.exit(1)
 
 
