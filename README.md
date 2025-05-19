@@ -14,6 +14,14 @@ Codex18 builds on the architectural foundations of Codex17. It uses a **memory b
 
 The ingest module under `src/` implements the first stage of the pipeline. It detects new Founder’s Reports placed in `data/reports_incoming`, extracts optional YAML metadata blocks, stamps each record with a secure UTC timestamp, writes structured JSON to `data/analysis_output`, and archives the original report in `data/chronicle/archive`.
 
+Run the ingestion pipeline with:
+
+```bash
+$ python src/ingest.py
+```
+
+The script scans the incoming folder, processes any new reports, and moves the originals to the archive directory.
+
 The ingestion system processes Founder's Reports end‑to‑end:
 
 1. **Detection and Import** – New reports added to the monitored directory are automatically detected.
@@ -30,13 +38,13 @@ Through this pipeline, Codex18 keeps its knowledge current while maintaining saf
 
 Key directories include:
 
-* **`/reports/founders/`** – Source and processed Founder's Reports.
-* **`/ingestion/`** – Scripts for detecting and parsing new documents.
-* **`/core/`** – Main agent logic and memory braid implementation.
-* **`/protector/`** – The safety layer and handshake protocol code.
-* **`/knowledge_base/`** or **`/data/`** – Persistent long‑term memory storage.
-* **`/docs/`** – Design documents and guides.
-* **Configuration Files** – Settings for memory retention, Protector rules, and ingestion parameters.
+* **`src/`** – Source code modules (ingestion pipeline, core logic, memory braid, etc.).
+* **`data/reports_incoming/`** – Folder scanned for new Founder's Reports.
+* **`data/analysis_output/`** – Generated JSON outputs and drift logs.
+* **`data/chronicle/archive/`** – Archived copies of original reports.
+* **`docs/`** – Design documents and guides (see `docs/drift_analysis.md`).
+* **`tests/`** – Automated test suite.
+* **Configuration Files** – Settings for memory retention and Protector rules under `config/`.
 
 This layout clarifies responsibility for each component, ensuring new reports flow from detection through processing to searchable knowledge in a maintainable way.
 
