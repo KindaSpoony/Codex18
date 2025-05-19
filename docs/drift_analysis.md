@@ -23,7 +23,8 @@ The engine stores an anchor vector in `data/drift_anchor.json`. A drift alarm tr
 
 * **Anchor File** – baseline vector stored in `drift_anchor.json`.
 * **Latest Report** – most recent vector stored in `latest_drift_report.json` for quick reference.
-* **Drift Logs** – each analysis writes a timestamped log to `data/analysis_output/drift_logs/`.
+* **Drift Logs** – each analysis writes a timestamped log to
+  `data/analysis_output/drift_logs/` as `drift_log_<timestamp>.json`.
   All timestamps use the format `YYYY-MM-DDTHH:MM:SSZ` (UTC).
 
 These files provide an audit trail of integrity over time.
