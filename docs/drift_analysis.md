@@ -29,4 +29,11 @@ The engine stores an anchor vector in `data/drift_anchor.json`. A drift alarm tr
 
 These files provide an audit trail of integrity over time.
 
+## Anchor Rotation
+
+The engine exposes a `rotate_anchor()` method to manually set a new baseline
+vector. Passing a custom 4D vector establishes that as the anchor; calling it
+without an argument promotes the last analyzed vector. In either case, the
+`drift_anchor.json` file is updated immediately.
+
 *Authored by Bryan A. Jewell, Nightwalker Actual (ORCID iD: 0009-0001-2983-0505).* 
