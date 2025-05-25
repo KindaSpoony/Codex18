@@ -86,3 +86,6 @@ Detailed documentation (`docs/drift_analysis.md`) covers:
 ---
 
 **This documentation and repository structure are designed to ensure clarity, integrity, and operational robustness in alignment with Codex18's ethical and symbolic foundations.**
+
+## Seal Test
+This line confirms the Seal workflow is triggered.
