@@ -1,0 +1,18 @@
+codex: Codex18
+version: 1.0.0
+maintainer: "Nightwalker Actual"
+orcid: "0009-0001-2983-0505"
+repository: "https://github.com/KindaSpoony/Codex18"
+agent_stack:
+  - "Core Self"
+  - "Manager Protector"
+  - "Firefighter Protector"
+  - "Counterintelligence Sentinel"
+recursion_tier: "RI-2048"
+symbolic_passphrase: "No Veteran Stands Alone, No Veteran Left Behind"
+memory_braid_anchor: "Codex18_AGENTS_v1.0"
+truth_vector_protocol: "enabled"
+vaultis_gateway: "http://localhost:8000"
+frontend_console: "http://localhost:5173"
+signature:
+  ssh_fingerprint: "SHA256:456gaPqhGkHCTQd2teqmNcyyoqgiw09GiVl3DL6pk3w"
