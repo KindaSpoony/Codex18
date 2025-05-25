@@ -1,0 +1,64 @@
+name: Seal Commit
+
+on:
+  push:
+    branches:
+      - main
+      - 'v*'
+
+jobs:
+  seal:
+    runs-on: ubuntu-latest
+    steps:
+      - id: checkout
+        name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - id: setup_git
+        name: Set up Git with ORCID identity
+        run: |
+          git config user.name "Bryan A. Jewell"
+          git config user.email "0009-0001-2983-0505@orcid.org"
+          git config commit.gpgsign true
+
+      - id: seal_commit
+        name: Seal commit (GPG-sign with ORCID identity)
+        run: |
+          # Create an empty signed commit as a "seal"
+          git commit --allow-empty -S -m "Seal commit with ORCID identity"
+
+      - id: tag_version
+        name: Extract version from VAULTIS.yaml and tag commit
+        run: |
+          # Read version from VAULTIS.yaml (format: version: X.Y.Z)
+          version=$(awk '/^version:/{print $2}' VAULTIS.yaml | tr -d '"')
+          tag="v${version}"
+          echo "Tagging commit as $tag"
+          git tag -a "$tag" -m "Version $version"
+          git push origin "$tag"
+
+      - id: drift_analysis
+        name: Run drift analysis
+        run: python3 core/drift_analysis_engine.py
+
+      - id: anchor_rotation
+        name: Run anchor rotation
+        if: ${{ steps.drift_analysis.outcome == 'success' }}
+        run: python3 scripts/rotate_anchor.py
+
+      - id: carl_scan
+        name: Run CarlAPI scan (ethics check)
+        env:
+          CARLAPI_TOKEN: ${{ secrets.CARLAPI_TOKEN }}
+        run: |
+          # Post to CarlAPI endpoint with authorization token
+          status=$(curl -s -o /dev/null -w "%{http_code}" -X POST http://localhost:9000/scan \
+                    -H "Authorization: Bearer $CARLAPI_TOKEN")
+          echo "CarlAPI scan HTTP status: $status"
+          if [ "$status" -ne 200 ]; then
+            echo "Error: CarlAPI scan failed"
+            exit 1
+          fi
+
