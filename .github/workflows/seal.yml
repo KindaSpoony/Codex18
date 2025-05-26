@@ -17,27 +17,28 @@ jobs:
           fetch-depth: 0
 
       - id: setup_git
-        name: Set up Git with ORCID identity
+        name: Set up Git and import GPG key
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
         run: |
-          git config user.name "Bryan A. Jewell"
-          git config user.email "0009-0001-2983-0505@orcid.org"
-          git config commit.gpgsign true
+          echo "Importing GPG key for Nightwalker Actual..."
+          echo "$GPG_PRIVATE_KEY" | gpg --batch --import
+          git config --global user.name "Bryan A. Jewell"
+          git config --global user.email "0009-0001-2983-0505@orcid.org"
+          git config --global user.signingkey "$GPG_KEY_ID"
+          git config --global commit.gpgsign true
 
       - id: seal_commit
-        name: Seal commit (GPG-sign with ORCID identity)
+        name: Seal commit with ORCID identity
         run: |
-          # Create an empty signed commit as a "seal"
-          git commit --allow-empty -S -m "Seal commit with ORCID identity"
+          git commit --allow-empty -S -m "Seal commit: No Veteran Left Behind"
 
-      - id: tag_version
-        name: Extract version from VAULTIS.yaml and tag commit
+      - name: Tag Version
         run: |
-          # Read version from VAULTIS.yaml (format: version: X.Y.Z)
-          version=$(awk '/^version:/{print $2}' VAULTIS.yaml | tr -d '"')
-          tag="v${version}"
-          echo "Tagging commit as $tag"
-          git tag -a "$tag" -m "Version $version"
-          git push origin "$tag"
+          version=$(grep '^version:' VAULTIS.yaml | cut -d':' -f2 | tr -d '[:space:]')
+          git tag -a "v$version" -m "Version $version"
+          git push origin --tags
 
       - id: drift_analysis
         name: Run drift analysis
