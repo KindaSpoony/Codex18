@@ -13,7 +13,10 @@ import json
 import hashlib
 from datetime import datetime
 
-import yaml  # PyYAML is used for parsing YAML front matter
+try:
+    import yaml  # Use PyYAML if available
+except Exception:
+    yaml = None
 import shutil
 
 # Define directories
@@ -57,11 +60,21 @@ for filename in os.listdir(INCOMING_DIR):
                 # Extract YAML front matter and parse it
                 yaml_lines = lines[1:end_idx]
                 yaml_text = "\n".join(yaml_lines)
-                try:
-                    metadata = yaml.safe_load(yaml_text) or {}
-                except Exception as e:
-                    print(f"Warning: Failed to parse YAML front matter in {filename}: {e}")
+                if yaml is not None:
+                    try:
+                        metadata = yaml.safe_load(yaml_text) or {}
+                    except Exception as e:
+                        print(f"Warning: Failed to parse YAML front matter in {filename}: {e}")
+                        metadata = {}
+                else:
+                    # Simple YAML parsing fallback (key: value pairs)
                     metadata = {}
+                    for line in yaml_lines:
+                        if not line.strip() or line.lstrip().startswith('#'):
+                            continue
+                        if ':' in line:
+                            key, val = line.split(':', 1)
+                            metadata[key.strip()] = val.strip()
                 # The rest of the file after the second '---' is the content
                 content = "\n".join(lines[end_idx+1:]).lstrip()
             else:

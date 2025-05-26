@@ -1,3 +1,1 @@
-# Placeholder trigger configuration
-actions:
-  - example: true
+{"codex_version": "17.0", "codex_name": "Codex17", "symbolic_passphrase": {"motto": "No Veteran Stands Alone", "creed": "No Veteran Left Behind"}, "actions": [{"example": true}]}

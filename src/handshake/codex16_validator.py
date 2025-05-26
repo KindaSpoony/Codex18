@@ -83,9 +83,15 @@ def verify_handshake(yaml_text: str = HANDSHAKE_YAML, audit: bool | None = None)
             return False
     else:
         if yaml is not None:
-            parsed = yaml.safe_load(yaml_text)
-            conditions = parsed.get("activation_conditions", {})
-            handshake_stack = parsed.get("handshake_stack", [])
+            try:
+                parsed = yaml.safe_load(yaml_text)
+            except Exception:
+                parsed = None
+            if isinstance(parsed, dict):
+                conditions = parsed.get("activation_conditions", {})
+                handshake_stack = parsed.get("handshake_stack", [])
+            else:
+                conditions, handshake_stack = _parse_handshake_yaml(yaml_text)
         else:
             # Fallback to regex parsing when PyYAML is unavailable.
             conditions, handshake_stack = _parse_handshake_yaml(yaml_text)
