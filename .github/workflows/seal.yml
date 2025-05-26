@@ -40,7 +40,7 @@ jobs:
 
       - name: Tag Version
         run: |
-          version=$(grep '^version:' VAULTIS.yaml | cut -d':' -f2 | tr -d '[:space:]')
+          version=$(grep '^version:' VAULTIS.yml | cut -d':' -f2 | tr -d '[:space:]')
           git tag -a "v$version" -m "Version $version"
           git push origin --tags
 
