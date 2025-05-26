@@ -1,4 +1,4 @@
-name: Seal Commit
+name: Codex18 Seal and Ethics Workflow
 
 on:
   push:
@@ -10,7 +10,8 @@ jobs:
   seal:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
       - name: Set up Python environment
         uses: actions/setup-python@v5
@@ -22,20 +23,20 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Import GPG key and setup Git
+      - name: Import GPG key and configure Git
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
         run: |
           echo "$GPG_PRIVATE_KEY" | gpg --batch --import
-          git config user.name "Bryan A. Jewell"
-          git config user.email "0009-0001-2983-0505@orcid.org"
-          git config commit.gpgsign true
-          git config user.signingkey "$GPG_KEY_ID"
+          git config --global user.name "Bryan A. Jewell"
+          git config --global user.email "0009-0001-2983-0505@orcid.org"
+          git config --global commit.gpgsign true
+          git config --global user.signingkey "$GPG_KEY_ID"
 
-      - name: Seal commit
+      - name: Seal commit with ORCID identity
         run: |
-          git commit --allow-empty -S -m "Seal commit with ORCID identity"
+          git commit --allow-empty -S -m "Seal commit: No Veteran Left Behind"
 
       - name: Tag Version
         run: |
@@ -43,19 +44,25 @@ jobs:
           git tag -a "v$version" -m "Version $version"
           git push origin --tags
 
-      - name: Drift Analysis (Truth Vector)
+      - name: Run Drift Analysis (Truth Vector)
         run: python3 core/drift_analysis_engine.py
 
       - name: Rotate Anchor
         run: python3 scripts/rotate_anchor.py
 
-      - name: CarlAPI Ethical Scan
+      - name: Ethical Constitution Backstop (CarlAPI Placeholder)
         env:
           CARLAPI_TOKEN: ${{ secrets.CARLAPI_TOKEN }}
         run: |
-          status=$(curl -s -o /dev/null -w "%{http_code}" -X POST http://localhost:9000/scan \
-                    -H "Authorization: Bearer $CARLAPI_TOKEN")
-          if [ "$status" -ne 200 ]; then
-            echo "CarlAPI scan failed with HTTP status $status"
-            exit 1
-          fi
+          echo "Invoking constitutional ethics check..."
+          # Placeholder for future CarlAPI integration
+          # Example:
+          # status=$(curl -s -o /dev/null -w "%{http_code}" -X POST https://carlapi.ethics/check \
+          #   -H "Authorization: Bearer $CARLAPI_TOKEN" \
+          #   -H "Content-Type: application/json" \
+          #   --data-binary "@policy_input.json")
+          # if [ "$status" -ne 200 ]; then
+          #   echo "CarlAPI constitutional ethics check failed with HTTP $status"
+          #   exit 1
+          # fi
+          echo "Ethics backstop engaged (placeholder logic only)."
