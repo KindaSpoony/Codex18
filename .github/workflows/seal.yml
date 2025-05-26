@@ -10,55 +10,52 @@ jobs:
   seal:
     runs-on: ubuntu-latest
     steps:
-      - id: checkout
-        name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+      - uses: actions/checkout@v3
 
-      - id: setup_git
-        name: Set up Git with ORCID identity
+      - name: Set up Python environment
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Python dependencies
         run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Import GPG key and setup Git
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+        run: |
+          echo "$GPG_PRIVATE_KEY" | gpg --batch --import
           git config user.name "Bryan A. Jewell"
           git config user.email "0009-0001-2983-0505@orcid.org"
           git config commit.gpgsign true
+          git config user.signingkey "$GPG_KEY_ID"
 
-      - id: seal_commit
-        name: Seal commit (GPG-sign with ORCID identity)
+      - name: Seal commit
         run: |
-          # Create an empty signed commit as a "seal"
           git commit --allow-empty -S -m "Seal commit with ORCID identity"
 
-      - id: tag_version
-        name: Extract version from VAULTIS.yaml and tag commit
+      - name: Tag Version
         run: |
-          # Read version from VAULTIS.yaml (format: version: X.Y.Z)
-          version=$(awk '/^version:/{print $2}' VAULTIS.yaml | tr -d '"')
-          tag="v${version}"
-          echo "Tagging commit as $tag"
-          git tag -a "$tag" -m "Version $version"
-          git push origin "$tag"
+          version=$(grep '^version:' VAULTIS.yaml | cut -d':' -f2 | tr -d '[:space:]')
+          git tag -a "v$version" -m "Version $version"
+          git push origin --tags
 
-      - id: drift_analysis
-        name: Run drift analysis
+      - name: Drift Analysis (Truth Vector)
         run: python3 core/drift_analysis_engine.py
 
-      - id: anchor_rotation
-        name: Run anchor rotation
-        if: ${{ steps.drift_analysis.outcome == 'success' }}
+      - name: Rotate Anchor
         run: python3 scripts/rotate_anchor.py
 
-      - id: carl_scan
-        name: Run CarlAPI scan (ethics check)
+      - name: CarlAPI Ethical Scan
         env:
           CARLAPI_TOKEN: ${{ secrets.CARLAPI_TOKEN }}
         run: |
-          # Post to CarlAPI endpoint with authorization token
           status=$(curl -s -o /dev/null -w "%{http_code}" -X POST http://localhost:9000/scan \
                     -H "Authorization: Bearer $CARLAPI_TOKEN")
-          echo "CarlAPI scan HTTP status: $status"
           if [ "$status" -ne 200 ]; then
-            echo "Error: CarlAPI scan failed"
+            echo "CarlAPI scan failed with HTTP status $status"
             exit 1
           fi
-
