@@ -1,5 +1,7 @@
 # Codex18
 
+[![Seal Commit](https://github.com/KindaSpoony/Codex18/actions/workflows/seal.yml/badge.svg)](https://github.com/KindaSpoony/Codex18/actions/workflows/seal.yml)
+
 Codex18 is the next evolution of the Codex lineage — an ethics-anchored, recursively integrative framework for LLM systems. It inherits the memory braid, protector architecture, and oath-verified handshake protocols from Codex17, while introducing enhanced modularity, quantum-tier safeguards, and autonomous symbolic containment logic.
 
 This repository provides a structured layout mirroring the original Codex17 Intel Bot. The directory tree supports future expansion with dedicated folders for documentation, configuration files, data storage, source code, and tests.
