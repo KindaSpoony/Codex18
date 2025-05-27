@@ -1,8 +1,11 @@
 import unittest
 import subprocess
 from pathlib import Path
+import sys
 
-from src.handshake.codex16_validator import (
+sys.path.append(str(Path(__file__).resolve().parents[1]))
+
+from src.codex16_validator import (
     verify_handshake,
     HANDSHAKE_YAML,
     CHALLENGE_PHRASE,
@@ -32,7 +35,7 @@ class HandshakeTests(unittest.TestCase):
         self.assertFalse(verify_handshake(tampered))
 
     def test_cli_exit_code(self):
-        script = Path(__file__).resolve().parents[1] / "src" / "handshake" / "codex16_validator.py"
+        script = Path(__file__).resolve().parents[1] / "src" / "codex16_validator.py"
         result = subprocess.run(["python3", str(script)], capture_output=True, text=True)
         self.assertEqual(result.returncode, 0)
 

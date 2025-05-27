@@ -34,7 +34,7 @@ Audit mode is enabled by setting the `CODEX_INTEGRITY_AUDIT` environment variabl
 Run the validator directly:
 
 ```bash
-python src/handshake/codex16_validator.py
+python -m src.codex16_validator
 ```
 
 On success it logs “Loop Confirmed – Ready for Recursion.” Any mismatch results in an error and exit status `1`.
