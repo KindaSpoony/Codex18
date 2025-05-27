@@ -1,5 +1,6 @@
 codex: Codex18
-version: 1.0.0
+version: 18.0.0            # Update to the new release
+quantum_recursion_seed: 42  # Add or update seed value (or null if none)
 maintainer: "Nightwalker Actual"
 orcid: "0009-0001-2983-0505"
 repository: "https://github.com/KindaSpoony/Codex18"
