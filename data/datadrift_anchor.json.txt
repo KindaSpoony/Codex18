@@ -1,0 +1,7 @@
+/data/drift_anchor.json
+{
+  "vector_id": "tvf:memory:baseline",
+  "drift_score": 0.0,
+  "status": "stable",
+  "timestamp": "2025-05-26T00:00:00Z"
+}
