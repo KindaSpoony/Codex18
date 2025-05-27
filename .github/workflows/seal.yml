@@ -23,20 +23,30 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Import GPG key and configure Git
+      - name: Import GPG Key
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-          GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+        shell: pwsh
         run: |
-          echo "$GPG_PRIVATE_KEY" | gpg --batch --import
-          git config --global user.name "Bryan A. Jewell"
-          git config --global user.email "0009-0001-2983-0505@orcid.org"
-          git config --global commit.gpgsign true
-          git config --global user.signingkey "$GPG_KEY_ID"
+          echo "$env:GPG_PRIVATE_KEY" | gpg --batch --import
 
-      - name: Seal commit with ORCID identity
+      - name: Configure GPG Agent for CI
+        shell: pwsh
         run: |
-          git commit --allow-empty -S -m "Seal commit: No Veteran Left Behind"
+          New-Item -ItemType Directory -Path "$HOME\.gnupg" -Force | Out-Null
+          Set-Content -Path "$HOME\.gnupg\gpg.conf" -Value "use-agent"
+          Set-Content -Path "$HOME\.gnupg\gpg-agent.conf" -Value "pinentry-mode loopback"
+          echo RELOADAGENT | & gpg-connect-agent
+
+      - name: GPG-Signed Commit with Loopback
+        shell: pwsh
+        run: |
+          git config user.name "Bryan A. Jewell"
+          git config user.email "0009-0001-2983-0505@orcid.org"
+          git -c gpg.program=gpg `
+              -c commit.gpgsign=true `
+              -c gpg.pinentry-mode=loopback `
+              commit --allow-empty -S -m "Seal commit: No Veteran Left Behind"
 
       - name: Tag Version
         run: |
