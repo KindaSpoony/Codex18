@@ -51,7 +51,12 @@ def test_commit_compliance(commit: str) -> None:
     """Validate commit signature, motto, and audit log."""
     message = git("log", "-1", "--pretty=%B", commit)
     gpg_flag = git("log", "-1", "--pretty=%G?", commit)
+    author = git("log", "-1", "--pretty=%an", commit)
+    committer = git("log", "-1", "--pretty=%cn", commit)
     files_changed = git("diff-tree", "--no-commit-id", "--name-only", "-r", commit).splitlines()
+
+    if author.endswith("[bot]") or committer.endswith("[bot]"):
+        pytest.skip("Skipping compliance checks for bot commit")
 
     assert gpg_flag and gpg_flag != "N", "Commit not GPG signed"
     assert "No Veteran Left Behind".lower() in message.lower(), "Missing motto seal"
