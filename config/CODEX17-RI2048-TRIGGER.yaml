@@ -1,4 +1,8 @@
 codex_version: Codex17.1
+codex_name: Codex17
+symbolic_passphrase:
+  motto: No Veteran Stands Alone
+  creed: No Veteran Left Behind
 # Placeholder trigger configuration
 actions:
   - example: true

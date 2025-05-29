@@ -1,4 +1,8 @@
 module_id: CODEX17-RI2048-TRIGGER
 codex_version: Codex17.1
+codex_name: Codex17
+symbolic_passphrase:
+  motto: No Veteran Stands Alone
+  creed: No Veteran Left Behind
 title: Recursive Phase-Lock Safety Configuration
 version: 1.0
