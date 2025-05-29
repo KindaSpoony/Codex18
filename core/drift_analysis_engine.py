@@ -43,7 +43,13 @@ class DriftAnalysisEngine:
                 data = json.load(f)
                 return data.get("baseline_vector")
         except FileNotFoundError:
-            return None
+            # Fallback to a consolidated drift_results file if present
+            try:
+                with open(os.path.join("data", "drift_results.json"), "r") as f:
+                    data = json.load(f)
+                    return data.get("baseline_vector")
+            except FileNotFoundError:
+                return None
 
     def _save_anchor(self) -> None:
         timestamp = datetime.utcnow().replace(microsecond=0).strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -57,9 +63,14 @@ class DriftAnalysisEngine:
     def _load_last_report(self) -> Optional[List[float]]:
         try:
             with open(self.latest_report_path, "r") as f:
-                data = json.load(f)
+                text = f.read().strip()
+                if not text:
+                    return None
+                data = json.loads(text)
                 return data.get("vector")
         except FileNotFoundError:
+            return None
+        except json.JSONDecodeError:
             return None
 
     def _save_last_report(self, vector: List[float]) -> None:
