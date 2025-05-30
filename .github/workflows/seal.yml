@@ -26,9 +26,12 @@ jobs:
       - name: Import GPG Key
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         shell: pwsh
         run: |
           echo "$env:GPG_PRIVATE_KEY" | gpg --batch --import
+          # Unlock the key using the provided passphrase
+          gpg --batch --pinentry-mode loopback --passphrase "$env:GPG_PASSPHRASE" -k >/dev/null
 
       - name: Configure GPG Agent for CI
         shell: pwsh
@@ -39,11 +42,13 @@ jobs:
           echo RELOADAGENT | & gpg-connect-agent
 
       - name: GPG-Signed Commit with Loopback
+        env:
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         shell: pwsh
         run: |
           git config user.name "Bryan A. Jewell"
           git config user.email "0009-0001-2983-0505@orcid.org"
-          git -c gpg.program=gpg `
+          git -c gpg.program="gpg --batch --pinentry-mode loopback --passphrase $env:GPG_PASSPHRASE" `
               -c commit.gpgsign=true `
               -c gpg.pinentry-mode=loopback `
               commit --allow-empty -S -m "Seal commit: No Veteran Left Behind"
