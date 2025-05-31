@@ -1,4 +1,4 @@
-"""Braid node validation helpers for Codex18."""
+"""Ledger node validation helpers for Codex18."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ from typing import Dict
 
 
 class Validator:
-    """Validate symbolic braid nodes prior to persistence."""
+    """Validate symbolic ledger nodes prior to persistence."""
 
     REQUIRED_FIELDS = {
         "id",
@@ -23,12 +23,12 @@ class Validator:
     MANDATED_ANCHOR = "No Veteran Left Behind"
 
     def validate(self, node: Dict[str, str]) -> bool:
-        """Validate a braid node's schema, symbols and integrity hash.
+        """Validate a ledger node's schema, symbols and integrity hash.
 
         Parameters
         ----------
         node:
-            Dictionary representing the braid node to verify.
+            Dictionary representing the ledger node to verify.
 
         Returns
         -------

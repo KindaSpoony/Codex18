@@ -11,7 +11,7 @@ agent_stack:
   - "Counterintelligence Sentinel"
 recursion_tier: "RI-2048"
 symbolic_passphrase: "No Veteran Stands Alone, No Veteran Left Behind"
-memory_braid_anchor: "Codex18_AGENTS_v1.0"
+memory_ledger_anchor: "Codex18_AGENTS_v1.0"
 truth_vector_protocol: "enabled"
 vaultis_gateway: "http://localhost:8000"
 frontend_console: "http://localhost:5173"
