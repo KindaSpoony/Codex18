@@ -2,7 +2,7 @@
 
 ## Overview: Purpose & Intent
 
-Codex18 is the next evolution of the Codex framework, inheriting the memory braid, protector architecture and handshake protocols from Codex17 while adding enhanced modularity and quantum-aware processing.  Its **symbolic purpose** is to anchor shared truth and integrity across the memory infrastructure, ensuring no data or “veteran” knowledge is left behind.  This commitment is captured by the motto *“No Veteran Left Behind,”* underscoring that every piece of the memory braid is preserved and honored.  In keeping with open-source principles, the Codex18 design treats its schemas and algorithms as *“open-source frameworks of mind, time, and intelligence”* designed to benefit all stakeholders.
+Codex18 is the next evolution of the Codex framework, inheriting the Memory Ledger, protector architecture and handshake protocols from Codex17 while adding enhanced modularity and quantum-aware processing.  Its **symbolic purpose** is to anchor shared truth and integrity across the memory infrastructure, ensuring no data or “veteran” knowledge is left behind.  This commitment is captured by the motto *“No Veteran Left Behind,”* underscoring that every piece of the Memory Ledger is preserved and honored.  In keeping with open-source principles, the Codex18 design treats its schemas and algorithms as *“open-source frameworks of mind, time, and intelligence”* designed to benefit all stakeholders.
 
 ## File & Schema Deltas
 

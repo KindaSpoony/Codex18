@@ -4,16 +4,16 @@ Placeholder for architecture description.
 
 More details coming soon.
 
-## Memory Braid Flow
+## Memory Ledger Flow
 
-This document details the Memory Braid mechanism within Codex18, responsible for maintaining persistent symbolic anchors and recursive truths aligned with VAULTIS principles.
+This document details the Memory Ledger mechanism within Codex18, responsible for maintaining persistent symbolic anchors and recursive truths aligned with VAULTIS principles.
 
 ### 1. Symbolic Memory Structure
 
-The Memory Braid subsystem stores symbolic data in structured nodes using YAML format. Each node references its parent, enabling traceability and integrity.
+The Memory Ledger subsystem stores symbolic data in structured nodes using YAML format. Each node references its parent, enabling traceability and integrity.
 
 ```yaml
-braid_node:
+ledger_node:
   id: "2025-05-25T1845Z-Node1"
   version_anchor: v18.0.1
   truth_vector_hash: "ab1c23def456"
@@ -27,26 +27,26 @@ braid_node:
 ```mermaid
 graph TD
   subgraph VAULTIS
-    braid((Memory Braid))
+    ledger((Memory Ledger))
     storage[(Symbolic Storage)]
-    braid -->|Updates & Anchors| storage
+    ledger -->|Updates & Anchors| storage
   end
-  CoreSelf[Core Self] -->|Commit & Validate| braid
-  Manager[Manager Protector] -->|Prepare & Merge| braid
-  Sentinel[Counterintelligence Sentinel] -->|Verify & Audit| braid
+  CoreSelf[Core Self] -->|Commit & Validate| ledger
+  Manager[Manager Protector] -->|Prepare & Merge| ledger
+  Sentinel[Counterintelligence Sentinel] -->|Verify & Audit| ledger
 ```
 
 ### 3. Agent Role Flow
-- **Core Self**: Oversees and finalizes braid updates, ensuring symbolic integrity before committing changes.
+- **Core Self**: Oversees and finalizes ledger updates, ensuring symbolic integrity before committing changes.
 - **Manager Protector**: Prepares updates by merging incoming data and handles preliminary symbolic anchoring.
 - **Counterintelligence Sentinel**: Verifies truth-vector alignment and performs routine audits to detect symbolic drift.
 
 ### 4. Code Reference
 
-The following pseudocode outlines the update logic for Memory Braid:
+The following pseudocode outlines the update logic for Memory Ledger:
 
 ```python
-class MemoryBraid:
+class MemoryLedger:
     def update(self, new_data, symbolic_anchor):
         current_node = self.get_latest_node()
         validated = Validator.validate(new_data)

@@ -1,6 +1,6 @@
 # Codex18
 
-Codex18 is the next evolution of the Codex lineage — an ethics-anchored, recursively integrative framework for LLM systems. It inherits the memory braid, protector architecture, and oath-verified handshake protocols from Codex17, while introducing enhanced modularity, quantum-tier safeguards, and autonomous symbolic containment logic.
+Codex18 is the next evolution of the Codex lineage — an ethics-anchored, recursively integrative framework for LLM systems. It inherits the Memory Ledger, protector architecture, and oath-verified handshake protocols from Codex17, while introducing enhanced modularity, quantum-tier safeguards, and autonomous symbolic containment logic.
 
 This repository provides a structured layout mirroring the original Codex17 Intel Bot. The directory tree supports future expansion with dedicated folders for documentation, configuration files, data storage, source code, and tests.
 
@@ -10,7 +10,7 @@ This repository provides a structured layout mirroring the original Codex17 Inte
 
 Codex18 builds upon Codex17's foundations, leveraging:
 
-* **Memory Braid**: Weaving short-term and long-term contexts.
+* **Memory Ledger**: Weaving short-term and long-term contexts.
 * **Protector Module**: Oversees actions to ensure ethical and operational safety.
 * **Handshake Protocols**: Coordinate secure interactions between system components, ensuring continuity and accountability.
 
@@ -34,7 +34,7 @@ python src/ingest.py
 
 ### Repository Structure and Data Organization
 
-* **`src/`** – Source code including ingestion, core logic, memory braid, and handshake protocols.
+* **`src/`** – Source code including ingestion, core logic, Memory Ledger, and handshake protocols.
 * **`data/`** – Storage for incoming reports, outputs, and archives:
 
   * `data/reports_incoming/`
