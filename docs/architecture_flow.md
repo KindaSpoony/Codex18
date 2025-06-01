@@ -1,8 +1,6 @@
 # Architecture Flow
 
-Placeholder for architecture description.
-
-More details coming soon.
+Codex18 brings ingestion, memory storage, drift analysis, and Protector safeguards together into a unified OSINT workflow. This document describes how those pieces connect.
 
 ## Memory Ledger Flow
 

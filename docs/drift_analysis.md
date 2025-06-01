@@ -2,6 +2,8 @@
 
 Codex18 monitors narrative drift using a four‑dimensional truth vector. This document outlines the purpose of drift detection, how the vector is computed, and what data is persisted.
 
+Drift monitoring is a core feature that keeps the OSINT memory braid stable as new reports are ingested.
+
 ## Purpose
 
 The drift analysis engine guards the knowledge base against corruption or erosion of truth. By comparing new inputs with a baseline vector, Codex18 can alert administrators when content deviates too far from verified facts or established context.

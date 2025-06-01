@@ -4,6 +4,8 @@ Codex18 is the next evolution of the Codex lineage — an ethics-anchored, recur
 
 This repository provides a structured layout mirroring the original Codex17 Intel Bot. The directory tree supports future expansion with dedicated folders for documentation, configuration files, data storage, source code, and tests.
 
+Codex18 aims to become a self-sufficient OSINT system. It will automatically ingest open-source intelligence reports, preserve contextual memory, detect narrative drift, and apply Protector safeguards so that actions remain ethical and accountable.
+
 ## Codex18 Architecture and Ingestion Pipeline
 
 ### Architectural Lineage and Core Concepts
@@ -83,9 +85,14 @@ Detailed documentation (`docs/drift_analysis.md`) covers:
   `data/analysis_output/drift_logs/`.
 * Usage examples and narrative management insights.
 
+## Roadmap
+
+For a high-level plan on how Codex18 will evolve, see [docs/roadmap.md](docs/roadmap.md).
+
 ---
 
 **This documentation and repository structure are designed to ensure clarity, integrity, and operational robustness in alignment with Codex18's ethical and symbolic foundations.**
+See `AGENTS.md` for contributor guidelines, including required tests before committing.
 
 ## Seal Test
 This line confirms the Seal workflow is triggered.
