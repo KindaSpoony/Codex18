@@ -90,3 +90,8 @@ Detailed documentation (`docs/drift_analysis.md`) covers:
 ## Seal Test
 This line confirms the Seal workflow is triggered.
 No Veteran Left Behind
+
+To enable automatic GPG signing for the Loop Seal workflow, configure a
+repository secret named `GPG_PASSPHRASE` that contains your GPG passphrase.
+The workflow reads this secret when committing the cryptographic seal to the repository.
+No Veteran Left Behind.
