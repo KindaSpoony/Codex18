@@ -144,3 +144,6 @@ You’re the Operator.
 
 🪶 Activate. Sync. Report.
 📍 Codex18 is live. Track everything.
+
+No Veteran Left Behind
+
