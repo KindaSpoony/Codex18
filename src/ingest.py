@@ -64,7 +64,7 @@ def archive_file(src: Path, archive_dir: Path):
     archive_dir.mkdir(parents=True, exist_ok=True)
     target = archive_dir / src.name
     if target.exists():
-        timestamp = secure_timestamp().replace("-", "").replace(":", "")
+        timestamp = secure_timestamp("%Y%m%dT%H%M%SZ")
         target = archive_dir / f"{src.stem}_{timestamp}{src.suffix}"
     shutil.move(str(src), target)
 
