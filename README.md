@@ -33,6 +33,10 @@ python src/ingest.py
 * **`docs/`** — Additional documentation.
 * **`tests/`** — Pytest suite verifying ingestion behavior.
 
+Before running the tests, ensure all dependencies are installed:
+
+```bash
+pip install -r requirements.txt
 Execute the tests using:
 
 ```bash
