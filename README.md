@@ -19,24 +19,14 @@ The Codex18 system architecture is organized into distinct but interlocking modu
 
 ```mermaid
 graph TD
-    %% Data Ingestion subgraph
-    subgraph "Data Ingestion"
-        incoming[Incoming Reports] --> ingest[Ingestion Pipeline]
-        ingest --> ledger[Memory Ledger (Structured Store)]
-        ingest --> archive[Archived Reports]
-    end
-    %% Analysis and Memory subgraph
-    subgraph "Analysis & Memory"
-        ledger --> drift[Drift Analysis Engine]
-        drift --> logs[Drift Logs & Alerts]
-        ledger --> summarizer[LLM Summarizer]
-        summarizer --> briefs[Analytical Briefs]
-    end
-    protector[Protector Module]
-    protector -.-> ledger
-    protector -.-> drift
-    protector -.-> summarizer
-    protector -->|Ethical Approval| briefs
+    A[Incoming OSINT Data] --> B[Ingestion Pipeline]
+    B --> C[Memory Ledger]
+    B --> H[Archival]
+    C --> D[Drift Analysis Engine]
+    C --> E[LLM Summarizer]
+    D --> F[Protector Module]
+    E --> F[Protector Module]
+    F --> G[Final Briefs / Alerts]
 ```
 
 In this architecture, **new reports** enter through the ingestion module and are converted into structured data stored in the **Memory Ledger** (a persistent knowledge base). Ingested raw files are simultaneously archived for record-keeping. The **Drift Analysis Engine** continuously compares incoming information against an anchored truth baseline; if content deviates significantly, it generates **drift logs and alerts**. A dedicated **LLM Summarizer** (integrating with GPT-4 or similar) can produce analytical briefs or daily intelligence summaries from the Memory Ledger’s contents. Overarching everything is the **Protector Module**, which monitors the system’s operations – it verifies memory integrity, checks drift assessments, and vets summarizer outputs – enforcing ethical guidelines before any intelligence output is finalized. Secure *handshake protocols* govern interactions between these components, ensuring each action or data exchange is authenticated and in compliance with the system’s oath-bound rules.
